@@ -7,10 +7,13 @@ import pandas as pd
 import torch
 from torch.utils.data import Dataset
 from adaptive_engine.config import Config
+from adaptive_engine.logging_config import get_logger
+
+logger = get_logger(__name__)
 
 
 def parse_timestamp(s: pd.Series) -> pd.Series:
-    ts = pd.to_datetime(s, errors="coerce", utc=True)
+    ts = pd.to_datetime(s, errors="coerce", utc=True, format='ISO8601')
     # fallback if already numeric
     if ts.isna().all():
         ts = pd.to_datetime(pd.to_numeric(s, errors="coerce"), unit="s", utc=True)
@@ -90,6 +93,8 @@ def build_samples_time_split(
 
     Each sample uses mastery and history computed strictly from earlier events.
     """
+    logger.info('Prepare questionds df')
+    
     qmeta = questions_df.copy()
     qmeta["question_id"] = qmeta["question_id"].astype(str)
     qmeta["term"] = qmeta["term"].astype(str)
@@ -97,6 +102,7 @@ def build_samples_time_split(
     qmeta["difficulty"] = qmeta["difficulty"].astype(str)
 
     # vocabularies
+    logger.info('Create vocabularies')
     q_vocab = build_vocab(qmeta["question_id"])
     term_vocab = build_vocab(qmeta["term"])
     cat_vocab = build_vocab(qmeta["category"])

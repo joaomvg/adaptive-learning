@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import torch
 from torch.utils.data import Dataset
+from adaptive_engine.config import Config
 
 
 def parse_timestamp(s: pd.Series) -> pd.Series:

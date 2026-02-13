@@ -1,0 +1,21 @@
+FROM python:3.10-slim
+
+WORKDIR /app
+
+# Optional system deps
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copy project
+COPY pyproject.toml README.md ./
+COPY adaptive_engine ./adaptive_engine
+
+# Install project
+RUN pip install --upgrade pip && pip install .
+
+# Model will be mounted at runtime
+ENV MODEL_PATH=/app/model.pt
+
+# Default command (overridden by docker-compose or docker run)
+CMD ["inference-adaptive", "--help"]

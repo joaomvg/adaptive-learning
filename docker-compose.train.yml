@@ -1,0 +1,19 @@
+version: "3.9"
+
+services:
+  trainer:
+    build:
+      context: .
+      dockerfile: Dockerfile.train
+    container_name: adaptive-engine-trainer
+    volumes:
+      # Mount your data folder into the container
+      - ./data:/data
+      # Mount outputs (model checkpoints, logs) back to host
+      - ./outputs:/outputs
+    command: >
+      train-adaptive
+      --questions /data/questions.csv
+      --interactions /data/interactions.csv
+      --out /outputs/model.pt
+      --epochs 5

@@ -148,7 +148,7 @@ def load_interactions(driver, interactions_df: pd.DataFrame, batch_size: int):
     df["correctness"] = pd.to_numeric(df["correctness"], errors="coerce").fillna(0.0).clip(0.0, 1.0).astype(np.float32)
 
     # Convert timestamps -> epoch seconds
-    ts = pd.to_datetime(df["timestamp"], errors="coerce", utc=True)
+    ts = pd.to_datetime(df["timestamp"], errors="coerce", utc=True, format='ISO8601')
     if ts.isna().all():
         # fallback numeric seconds
         ts = pd.to_datetime(pd.to_numeric(df["timestamp"], errors="coerce"), unit="s", utc=True)
